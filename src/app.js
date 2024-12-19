@@ -1,22 +1,15 @@
 import app from "./config/express.config.js";
+import * as encodeDecodeController from "./controller/encodeDecode.controller.js";
 
-app.post('/encode', encode);
-app.get('/decode', decode);
+app.post('/encode', encodeDecodeController.encode);
+app.get('/decode', encodeDecodeController.decode);
 
-app.get('/', (req, res) => {
-    res.status(200).send({
-        code: 200,
-        message: "B64 Linker Api versão 1.0.0",
-        timestamp: new Date(Date.now()).toLocaleString("pt-BR", { timeZone: "America/Fortaleza" }),
-    });
+app.get('/', async (req, res) => {
+    res.status(200).send(await responseBuilder(200, "B64 Linker Api versão 1.0.0"));
 });
 
-app.use((req, res) => {
-    res.status(404).send({
-        code: 404,
-        message: "Endpoint não encontrado :/",
-        timestamp: new Date(Date.now()).toLocaleString("pt-BR", { timeZone: "America/Fortaleza" }),
-    });
+app.use(async (req, res) => {
+    res.status(404).send(await responseBuilder(404, "Rota não encontrada"));
 });
 
 export default app;

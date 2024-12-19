@@ -1,37 +1,23 @@
+import responseBuilder from "../builders/responseBuilder.builder.js";
+
 async function encode(req, res) {
   const { link } = req.query;
 
   try {
     const codifiedLink = Buffer.from(link).toString("base64url");
-    res.status(200).send({
-      code: 200,
-      message: codifiedLink,
-      timestamp: new Date(Date.now()).toLocaleString("pt-BR", { timeZone: "America/Fortaleza" }),
-    });
-  } catch (e) {
-    res.status(500).send({
-      code: 500,
-      message: "Erro Interno :/",
-      timestamp: new Date(Date.now()).toLocaleString("pt-BR", { timeZone: "America/Fortaleza" }),
-    });
+    return res.status(200).send(await responseBuilder(200, codifiedLink));
+  } catch (error) {
+    return res.status(500).send(await responseBuilder(500, `Erro Interno: ${error.message}`));
   }
 }
 
 async function decode(req, res) {
-  const { b64code } = req.query;
+  const code = req.query.code;
   try {
-    const uncodifiedLink = Buffer.from(b64code, "base64url").toString("ascii");
-    res.status(200).send({
-      code: 200,
-      message: uncodifiedLink,
-      timestamp: new Date(Date.now()).toLocaleString("pt-BR", { timeZone: "America/Fortaleza" }),
-    });
-  } catch (e) {
-    res.status(500).send({
-      code: 500,
-      message: "Erro Interno :/",
-      timestamp: new Date(Date.now()).toLocaleString("pt-BR", { timeZone: "America/Fortaleza" }),
-    });
+    const uncodifiedLink = Buffer.from(code, "base64url").toString("ascii");
+    return res.status(200).send(await responseBuilder(200, uncodifiedLink));
+  } catch (error) {
+    return res.status(500).send(await responseBuilder(500, `Erro Interno: ${error.message}`));
   }
 }
 
